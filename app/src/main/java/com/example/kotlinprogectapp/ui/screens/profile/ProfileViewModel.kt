@@ -16,17 +16,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    savedStateHandle:          SavedStateHandle,
-    private val getProfileUseCase:    GetProfileUseCase,
+    savedStateHandle: SavedStateHandle,
+    private val getProfileUseCase: GetProfileUseCase,
     private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase,
     private val getUserHistoryUseCase: GetCurrentUserIdUseCase,
     private val sendFriendRequestUseCase: SendFriendRequestUseCase,
-    private val logoutUseCase:        LogoutUseCase
+    private val logoutUseCase: LogoutUseCase
 ) : ViewModel() {
-
-    // Читаем userId из аргументов навигации (null = свой профиль)
     private val userId: Long? = savedStateHandle.get<Long>("userId")
-
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 
@@ -44,7 +41,6 @@ class ProfileViewModel @Inject constructor(
         val id = userId ?: return
         viewModelScope.launch {
             sendFriendRequestUseCase(id).onSuccess {
-                // Оптимистичное обновление — не ждём перезагрузки
                 _uiState.update { it.copy(relation = UserRelation.PENDING) }
             }
         }

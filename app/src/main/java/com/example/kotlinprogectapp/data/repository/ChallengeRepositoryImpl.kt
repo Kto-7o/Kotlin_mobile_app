@@ -23,12 +23,10 @@ class ChallengeRepositoryImpl @Inject constructor(
         return try {
             val dtos = api.getChallenges(tab.name.lowercase())
             val challenges = dtos.map { it.toDomain() }
-            // обновляем кэш: сначала чистим старые, потом пишем свежие
             dao.deleteByTab(tab.name.lowercase())
             dao.insertAll(dtos.map { it.toEntity(tab) })
             Result.success(challenges)
         } catch (e: Exception) {
-            // нет сети — отдаём кэш
             val cached = dao.getChallengesByTab(tab.name.lowercase())
                 .first()
                 .map { it.toDomain() }
@@ -41,10 +39,10 @@ class ChallengeRepositoryImpl @Inject constructor(
         return try {
             val dto = api.createChallenge(
                 CreateChallengeDto(
-                    title          = data.title,
-                    description    = data.description,
-                    proofType      = data.proofType.name,
-                    deadlineDays   = data.deadlineDays,
+                    title = data.title,
+                    description = data.description,
+                    proofType = data.proofType.name,
+                    deadlineDays = data.deadlineDays,
                     invitedUserIds = data.invitedFriendIds
                 )
             )

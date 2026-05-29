@@ -46,22 +46,22 @@ fun RegisterScreen(navController: NavController) {
         Spacer(Modifier.height(24.dp))
 
         OutlinedTextField(
-            value         = state.username,
+            value = state.username,
             onValueChange = vm::onUsernameChanged,
-            label         = { Text("Имя") },
-            singleLine    = true,
-            modifier      = Modifier.fillMaxWidth()
+            label = { Text("Имя") },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth()
         )
         Spacer(Modifier.height(12.dp))
 
         OutlinedTextField(
-            value         = state.tag,
+            value = state.tag,
             onValueChange = vm::onTagChanged,
-            label         = { Text("@тег") },
-            singleLine    = true,
-            modifier      = Modifier.fillMaxWidth(),
-            prefix        = { Text("@") },
-            trailingIcon  = {
+            label = { Text("@тег") },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
+            prefix = { Text("@") },
+            trailingIcon = {
                 when {
                     state.isCheckingTag  -> CircularProgressIndicator(
                         modifier = Modifier.size(18.dp), strokeWidth = 2.dp, color = Orange500
@@ -78,23 +78,23 @@ fun RegisterScreen(navController: NavController) {
         Spacer(Modifier.height(12.dp))
 
         OutlinedTextField(
-            value           = state.email,
-            onValueChange   = vm::onEmailChanged,
-            label           = { Text("Email") },
-            singleLine      = true,
-            modifier        = Modifier.fillMaxWidth(),
+            value = state.email,
+            onValueChange = vm::onEmailChanged,
+            label = { Text("Email") },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
         )
         Spacer(Modifier.height(12.dp))
 
         OutlinedTextField(
-            value                = state.password,
-            onValueChange        = vm::onPasswordChanged,
-            label                = { Text("Пароль") },
-            singleLine           = true,
-            modifier             = Modifier.fillMaxWidth(),
+            value = state.password,
+            onValueChange = vm::onPasswordChanged,
+            label = { Text("Пароль") },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
             visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions      = KeyboardOptions(keyboardType = KeyboardType.Password)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
         )
 
         if (state.error != null) {
@@ -106,10 +106,10 @@ fun RegisterScreen(navController: NavController) {
         Spacer(Modifier.height(24.dp))
 
         Button(
-            onClick  = vm::onSubmit,
-            enabled  = state.isValid && !state.isLoading,
+            onClick = vm::onSubmit,
+            enabled = state.isValid && !state.isLoading,
             modifier = Modifier.fillMaxWidth().height(50.dp),
-            colors   = ButtonDefaults.buttonColors(containerColor = Orange500)
+            colors  = ButtonDefaults.buttonColors(containerColor = Orange500)
         ) {
             if (state.isLoading) CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary)
             else Text("Создать аккаунт", fontWeight = FontWeight.Bold)

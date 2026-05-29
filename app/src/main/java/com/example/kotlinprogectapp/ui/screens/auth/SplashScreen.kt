@@ -29,10 +29,10 @@ fun SplashScreen(navController: NavController) {
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Text(
-            text       = "Goal",
-            fontSize   = 40.sp,
+            text = "Goal",
+            fontSize = 40.sp,
             fontWeight = FontWeight.ExtraBold,
-            color      = MaterialTheme.colorScheme.onBackground
+            color = MaterialTheme.colorScheme.onBackground
         )
     }
 }

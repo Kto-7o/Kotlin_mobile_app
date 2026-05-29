@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.kotlinprogectapp.domain.model.Friend
 import com.example.kotlinprogectapp.domain.model.FriendRequest
 import com.example.kotlinprogectapp.domain.model.UserRelation
@@ -27,7 +28,9 @@ import com.example.kotlinprogectapp.ui.theme.Orange500
 import com.example.kotlinprogectapp.ui.theme.Red
 
 @Composable
-fun FriendsScreen(navController: NavController) {
+fun FriendsScreen(navController: NavController,
+                  rootNavController: NavHostController
+) {
     val vm: FriendsViewModel = hiltViewModel()
     val state by vm.uiState.collectAsStateWithLifecycle()
     var showDeleteDialog by remember { mutableStateOf<Friend?>(null) }
@@ -35,8 +38,8 @@ fun FriendsScreen(navController: NavController) {
     showDeleteDialog?.let { friend ->
         AlertDialog(
             onDismissRequest = { showDeleteDialog = null },
-            title   = { Text("Удалить друга?") },
-            text    = { Text("${friend.username} будет удалён из списка друзей") },
+            title = { Text("Удалить друга?") },
+            text = { Text("${friend.username} будет удалён из списка друзей") },
             confirmButton = {
                 TextButton(onClick = {
                     vm.onDeleteFriend(friend.id)
@@ -52,34 +55,34 @@ fun FriendsScreen(navController: NavController) {
     Column(modifier = Modifier.fillMaxSize()) {
         // Поиск
         SearchBar(
-            query         = state.searchQuery,
+            query = state.searchQuery,
             onQueryChange = vm::onSearchQueryChanged,
-            modifier      = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
         )
 
         if (state.searchQuery.isNotBlank()) {
             // Режим поиска
             SearchResultsList(
-                results         = state.searchResults,
-                isSearching     = state.isSearching,
-                onSendRequest   = vm::onSendRequest,
-                onProfileClick  = { navController.navigate(Screen.FriendProfile.createRoute(it)) }
+                results = state.searchResults,
+                isSearching = state.isSearching,
+                onSendRequest = vm::onSendRequest,
+                onProfileClick = { navController.navigate(Screen.FriendProfile.createRoute(it)) }
             )
         } else {
 
             TabRow(
                 selectedTabIndex = state.activeTab.ordinal,
-                containerColor   = MaterialTheme.colorScheme.surface
+                containerColor = MaterialTheme.colorScheme.surface
             ) {
                 Tab(
                     selected = state.activeTab == FriendsTab.MY_FRIENDS,
-                    onClick  = { vm.onTabSelected(FriendsTab.MY_FRIENDS) },
-                    text     = { Text("Мои друзья") }
+                    onClick = { vm.onTabSelected(FriendsTab.MY_FRIENDS) },
+                    text = { Text("Мои друзья") }
                 )
                 Tab(
                     selected = state.activeTab == FriendsTab.REQUESTS,
-                    onClick  = { vm.onTabSelected(FriendsTab.REQUESTS) },
-                    text     = {
+                    onClick = { vm.onTabSelected(FriendsTab.REQUESTS) },
+                    text = {
                         BadgedBox(badge = {
                             state.requestsBadge?.let { Badge { Text("$it") } }
                         }) { Text("Запросы") }
@@ -89,13 +92,13 @@ fun FriendsScreen(navController: NavController) {
 
             when (state.activeTab) {
                 FriendsTab.MY_FRIENDS -> FriendsList(
-                    friends        = state.friends,
-                    onProfileClick = { navController.navigate(Screen.FriendProfile.createRoute(it)) },
-                    onLongPress    = { showDeleteDialog = it }
+                    friends = state.friends,
+                    onProfileClick = { rootNavController.navigate(Screen.FriendProfile.createRoute(it)) },
+                    onLongPress = { showDeleteDialog = it }
                 )
-                FriendsTab.REQUESTS  -> RequestsList(
-                    incoming  = state.incomingRequests,
-                    outgoing  = state.outgoingRequests,
+                FriendsTab.REQUESTS -> RequestsList(
+                    incoming = state.incomingRequests,
+                    outgoing = state.outgoingRequests,
                     onRespond = vm::onRequestRespond
                 )
             }
@@ -106,21 +109,21 @@ fun FriendsScreen(navController: NavController) {
 @Composable
 private fun SearchBar(query: String, onQueryChange: (String) -> Unit, modifier: Modifier) {
     OutlinedTextField(
-        value         = query,
+        value = query,
         onValueChange = onQueryChange,
-        modifier      = modifier.fillMaxWidth(),
-        placeholder   = { Text("Поиск по имени или @тегу") },
-        leadingIcon   = { Icon(Icons.Default.Search, contentDescription = null) },
-        singleLine    = true,
-        shape         = RoundedCornerShape(12.dp)
+        modifier = modifier.fillMaxWidth(),
+        placeholder = { Text("Поиск по имени или @тегу") },
+        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+        singleLine = true,
+        shape = RoundedCornerShape(12.dp)
     )
 }
 
 @Composable
 private fun SearchResultsList(
-    results:        List<Friend>,
-    isSearching:    Boolean,
-    onSendRequest:  (Long) -> Unit,
+    results: List<Friend>,
+    isSearching: Boolean,
+    onSendRequest: (Long) -> Unit,
     onProfileClick: (Long) -> Unit
 ) {
     if (isSearching) {
@@ -155,19 +158,19 @@ private fun SearchResultsList(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun FriendsList(
-    friends:       List<Friend>,
+    friends: List<Friend>,
     onProfileClick: (Long) -> Unit,
-    onLongPress:   (Friend) -> Unit
+    onLongPress: (Friend) -> Unit
 ) {
     LazyColumn {
         items(friends) { friend ->
             FriendRow(
-                friend    = friend,
-                modifier  = Modifier.combinedClickable(
-                    onClick     = { onProfileClick(friend.id) },
+                friend = friend,
+                modifier = Modifier.combinedClickable(
+                    onClick = { onProfileClick(friend.id) },
                     onLongClick = { onLongPress(friend) }
                 ),
-                trailing  = {
+                trailing = {
                     Text(
                         "${friend.activeChallenges} активных",
                         style = MaterialTheme.typography.bodyMedium
@@ -192,7 +195,7 @@ private fun RequestsList(
             }
             items(incoming) { request ->
                 FriendRow(
-                    friend   = request.fromUser,
+                    friend = request.fromUser,
                     trailing = {
                         Row {
                             IconButton(onClick = { onRespond(request.id, true) }) {
@@ -213,7 +216,7 @@ private fun RequestsList(
             }
             items(outgoing) { request ->
                 FriendRow(
-                    friend   = request.fromUser,
+                    friend = request.fromUser,
                     trailing = {
                         TextButton(onClick = {}, enabled = false) { Text("Отправлен") }
                     }
@@ -231,11 +234,11 @@ private fun FriendRow(
     trailing: @Composable () -> Unit
 ) {
     ListItem(
-        modifier     = modifier,
-        headlineContent   = { Text(friend.username, fontWeight = FontWeight.SemiBold) },
+        modifier = modifier,
+        headlineContent = { Text(friend.username, fontWeight = FontWeight.SemiBold) },
         supportingContent = { Text("@${friend.tag}", style = MaterialTheme.typography.bodyMedium) },
-        leadingContent    = { AvatarView(name = friend.username, size = 42.dp) },
-        trailingContent   = trailing
+        leadingContent = { AvatarView(name = friend.username, size = 42.dp) },
+        trailingContent = trailing
     )
     Divider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.15f))
 }

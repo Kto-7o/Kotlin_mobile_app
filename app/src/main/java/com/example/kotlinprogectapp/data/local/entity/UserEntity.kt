@@ -14,8 +14,8 @@ data class UserEntity(
 )
 
 fun UserEntity.toDomain(): User = User(
-    id       = id,
+    id = id,
     username = username,
-    tag      = tag,
-    email    = email
+    tag = tag,
+    email = email
 )

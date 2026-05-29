@@ -28,48 +28,46 @@ import com.example.kotlinprogectapp.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen(navController: NavController, userId: Long? = null) {
+fun ProfileScreen(rootNavController: NavController, userId: Long? = null) {
     val vm: ProfileViewModel = hiltViewModel()
     val state by vm.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         vm.events.collect { route ->
-            navController.navigate(route) {
+            rootNavController.navigate(route) {
                 popUpTo(0) { inclusive = true }
             }
         }
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    if (state.isOwnProfile) Text("Профиль")
-                    else Text(state.user?.username ?: "")
-                },
-                navigationIcon = {
-                    if (!state.isOwnProfile) {
-                        IconButton(onClick = { navController.popBackStack() }) {
-                            Icon(Icons.Default.ArrowBack, contentDescription = "Назад")
-                        }
-                    }
-                }
-            )
-        }
-    ) { padding ->
+//    Scaffold(
+////        topBar = {
+////            TopAppBar(
+////                title = {
+////                    if (state.isOwnProfile) Text("Профиль")
+////                    else Text(state.user?.username ?: "")
+////                },
+////                navigationIcon = {
+////                    if (!state.isOwnProfile) {
+////                        IconButton(onClick = { navController.popBackStack() }) {
+////                            Icon(Icons.Default.ArrowBack, contentDescription = "Назад")
+////                        }
+////                    }
+////                }
+////            )
+////        }
+//    ) { padding ->
         when {
-            state.isLoading -> LoadingView(Modifier.padding(padding))
+            state.isLoading -> LoadingView()
             state.user == null -> Box(
-                Modifier.fillMaxSize().padding(padding),
-                Alignment.Center
+                Modifier.fillMaxSize()
             ) { Text("Не удалось загрузить профиль") }
             else -> LazyColumn(
-                modifier       = Modifier.fillMaxSize().padding(padding),
+                modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(bottom = 32.dp)
             ) {
                 item { ProfileHero(user = state.user!!) }
 
-                // Кнопка Добавить — только на чужом профиле
                 if (!state.isOwnProfile) {
                     item { AddFriendButton(relation = state.relation, onAdd = vm::onAddFriend) }
                 }
@@ -83,7 +81,7 @@ fun ProfileScreen(navController: NavController, userId: Long? = null) {
                         Text(
                             "История",
                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                            style    = MaterialTheme.typography.labelSmall,
+                            style = MaterialTheme.typography.labelSmall,
                             fontWeight = FontWeight.Bold
                         )
                     }
@@ -94,7 +92,7 @@ fun ProfileScreen(navController: NavController, userId: Long? = null) {
                     item {
                         Spacer(Modifier.height(16.dp))
                         TextButton(
-                            onClick  = vm::onLogout,
+                            onClick = vm::onLogout,
                             modifier = Modifier.fillMaxWidth()
                         ) { Text("Выйти", color = Red) }
                     }
@@ -102,12 +100,12 @@ fun ProfileScreen(navController: NavController, userId: Long? = null) {
             }
         }
     }
-}
+//}
 
 @Composable
 private fun ProfileHero(user: User) {
     Column(
-        modifier            = Modifier.fillMaxWidth().padding(20.dp),
+        modifier = Modifier.fillMaxWidth().padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AvatarView(name = user.username, size = 72.dp)
@@ -120,15 +118,15 @@ private fun ProfileHero(user: User) {
 @Composable
 private fun AddFriendButton(relation: UserRelation, onAdd: () -> Unit) {
     val (label, enabled) = when (relation) {
-        UserRelation.NONE    -> "Добавить в друзья"  to true
-        UserRelation.PENDING -> "Запрос отправлен"    to false
-        UserRelation.FRIEND  -> "Уже друзья"          to false
+        UserRelation.NONE -> "Добавить в друзья" to true
+        UserRelation.PENDING -> "Запрос отправлен" to false
+        UserRelation.FRIEND -> "Уже друзья" to false
     }
     Button(
-        onClick  = onAdd,
-        enabled  = enabled,
+        onClick = onAdd,
+        enabled = enabled,
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-        colors   = ButtonDefaults.buttonColors(containerColor = Orange500)
+        colors = ButtonDefaults.buttonColors(containerColor = Orange500)
     ) { Text(label, fontWeight = FontWeight.SemiBold) }
     Spacer(Modifier.height(8.dp))
 }
@@ -136,21 +134,21 @@ private fun AddFriendButton(relation: UserRelation, onAdd: () -> Unit) {
 @Composable
 private fun StatsRow(stats: UserStats) {
     Row(
-        modifier            = Modifier.fillMaxWidth().padding(16.dp),
+        modifier = Modifier.fillMaxWidth().padding(16.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         listOf(
-            "Создано"   to stats.created.toString(),
+            "Создано" to stats.created.toString(),
             "Выполнено" to stats.completed.toString(),
-            "Успех"     to "${stats.successRate}%"
+            "Успех" to "${stats.successRate}%"
         ).forEach { (label, value) ->
             Card(
                 modifier = Modifier.weight(1f),
-                colors   = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-                shape    = RoundedCornerShape(12.dp)
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                shape = RoundedCornerShape(12.dp)
             ) {
                 Column(
-                    modifier            = Modifier.padding(12.dp),
+                    modifier = Modifier.padding(12.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(value, fontSize = 22.sp, fontWeight = FontWeight.ExtraBold)
@@ -166,16 +164,16 @@ private fun StatsRow(stats: UserStats) {
 private fun HistoryItem(item: ChallengeHistoryItem) {
     val (icon, color) = when (item.result) {
         ChallengeResult.SUCCESS -> "✓" to Green
-        ChallengeResult.FAIL    -> "✕" to Red
+        ChallengeResult.FAIL -> "✕" to Red
         ChallengeResult.EXPIRED -> "⏱" to MaterialTheme.colorScheme.outline
     }
     ListItem(
-        headlineContent   = { Text(item.title, style = MaterialTheme.typography.bodyLarge) },
+        headlineContent = { Text(item.title, style = MaterialTheme.typography.bodyLarge) },
         supportingContent = { Text(item.date, style = MaterialTheme.typography.bodyMedium) },
-        leadingContent    = {
+        leadingContent = {
             Surface(
-                shape  = RoundedCornerShape(8.dp),
-                color  = color.copy(alpha = 0.12f),
+                shape = RoundedCornerShape(8.dp),
+                color = color.copy(alpha = 0.12f),
                 modifier = Modifier.size(32.dp)
             ) {
                 Box(Modifier.fillMaxSize(), Alignment.Center) {

@@ -1,5 +1,8 @@
 package com.example.kotlinprogectapp.ui.screens.feed
 
+import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -24,34 +27,34 @@ import com.example.kotlinprogectapp.ui.theme.Green
 import com.example.kotlinprogectapp.ui.theme.Orange500
 import com.example.kotlinprogectapp.ui.theme.Red
 
+@SuppressLint("SuspiciousIndentation")
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FeedScreen(navController: NavController) {
     val vm: FeedViewModel = hiltViewModel()
     val state by vm.uiState.collectAsStateWithLifecycle()
-    val pullState = rememberPullToRefreshState()
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text("chall.", fontWeight = FontWeight.ExtraBold, color = Orange500)
-                },
-                actions = {
-                    IconButton(onClick = { navController.navigate(Screen.Create.route) }) {
-                        Icon(Icons.Default.Add, contentDescription = "Создать")
-                    }
-                }
-            )
-        }
-    ) { padding ->
-        PullToRefreshBox(
-            isRefreshing = state.isLoading,
-            onRefresh    = vm::onRefresh,
-            modifier     = Modifier.padding(padding)
-        ) {
-            Column {
-                // Таб-строка
+//    Scaffold(
+////        topBar = {
+////            TopAppBar(
+////                title = {
+////                    Text("Goal", fontWeight = FontWeight.ExtraBold, color = Orange500)
+////                },
+////                actions = {
+////                    IconButton(onClick = { navController.navigate(Screen.Create.route) }) {
+////                        Icon(Icons.Default.Add, contentDescription = "Создать")
+////                    }
+////                }
+////            )
+////        }
+//    ) { padding ->
+//        PullToRefreshBox(
+//            isRefreshing = state.isLoading,
+//            onRefresh = vm::onRefresh,
+//            modifier = Modifier.padding(padding)
+//        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
                 FeedTabRow(activeTab = state.activeTab, onSelect = vm::onTabSelected)
 
                 when {
@@ -62,15 +65,15 @@ fun FeedScreen(navController: NavController) {
                     state.challenges.isEmpty() ->
                         EmptyState("🏆", "Нет активных челленджей\nСоздайте первый!")
                     else -> FeedList(
-                        challenges      = state.challenges,
+                        challenges = state.challenges,
                         onVerdictSubmit = vm::onVerdictSubmit,
-                        onCreateClick   = { navController.navigate(Screen.Create.route) }
+                        onCreateClick = { navController.navigate(Screen.Create.route) }
                     )
                 }
             }
         }
-    }
-}
+//    }
+//}
 
 @Composable
 private fun FeedTabRow(activeTab: com.example.kotlinprogectapp.domain.model.FeedTab, onSelect: (com.example.kotlinprogectapp.domain.model.FeedTab) -> Unit) {
@@ -164,8 +167,8 @@ private fun CardFooter(status: ChallengeStatus) {
                 TextButton(onClick = {}) { Text("Реванш") }
             }
             ChallengeStatus.INCOMING -> {
-                TextButton(onClick = {}) { Text("✓ Принять",   color = Green) }
-                TextButton(onClick = {}) { Text("✕ Отклонить", color = Red) }
+                TextButton(onClick = {}) { Text("Принять",   color = Green) }
+                TextButton(onClick = {}) { Text("Отклонить", color = Red) }
             }
             else -> {}
         }
@@ -197,7 +200,7 @@ private fun PendingProofCard(proof: ProofUi, onAccept: () -> Unit, onDecline: ()
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
-            Text("📋 Ожидает вашей оценки",
+            Text("Ожидает вашей оценки",
                 style = MaterialTheme.typography.labelSmall, color = Orange500)
             Spacer(Modifier.height(8.dp))
             Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
@@ -219,13 +222,16 @@ private fun PendingProofCard(proof: ProofUi, onAccept: () -> Unit, onDecline: ()
                     onClick  = onAccept,
                     modifier = Modifier.weight(1f),
                     colors   = ButtonDefaults.buttonColors(containerColor = Green.copy(alpha = 0.15f)),
-                ) { Text("✓ Засчитать", color = Green) }
+                ) { Text("Засчитать", color = Green) }
                 Button(
                     onClick  = onDecline,
                     modifier = Modifier.weight(1f),
                     colors   = ButtonDefaults.buttonColors(containerColor = Red.copy(alpha = 0.1f)),
-                ) { Text("✕ Отклонить", color = Red) }
+                ) { Text("Отклонить", color = Red) }
             }
         }
     }
 }
+
+
+

@@ -14,8 +14,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-// Генерируем цвет фона из хэша имени чтобы у каждого пользователя
-// был свой цвет аватара, не случайный при каждой перерисовке
+
 fun avatarColor(name: String): Color {
     val colors = listOf(
         Color(0xFF3B82F6), Color(0xFF8B5CF6), Color(0xFF10B981),
@@ -40,16 +39,16 @@ fun AvatarView(
         .ifEmpty { "?" }
 
     Box(
-        modifier        = modifier
+        modifier = modifier
             .size(size)
             .clip(CircleShape)
             .background(avatarColor(name)),
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text       = initials,
-            color      = Color.White,
-            fontSize   = (size.value * 0.35f).sp,
+            text = initials,
+            color = Color.White,
+            fontSize = (size.value * 0.35f).sp,
             fontWeight = FontWeight.Bold
         )
     }

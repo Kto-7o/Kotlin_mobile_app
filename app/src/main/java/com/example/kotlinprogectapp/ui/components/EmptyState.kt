@@ -12,20 +12,20 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun EmptyState(
-    icon:     String,
-    message:  String,
+    icon: String,
+    message: String,
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier             = modifier.fillMaxSize(),
-        verticalArrangement   = Arrangement.Center,
-        horizontalAlignment   = Alignment.CenterHorizontally
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = icon,    fontSize = 48.sp)
+        Text(text = icon, fontSize = 48.sp)
         Spacer(Modifier.height(12.dp))
         Text(
-            text      = message,
-            style     = MaterialTheme.typography.bodyMedium,
+            text = message,
+            style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center
         )
     }

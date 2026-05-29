@@ -4,55 +4,55 @@ package com.example.kotlinprogectapp.data.remote.dto
 import com.example.kotlinprogectapp.domain.model.*
 
 fun ChallengeDto.toDomain(): Challenge = Challenge(
-    id          = id,
-    title       = title,
+    id = id,
+    title = title,
     description = description,
-    creatorId   = creatorId,
+    creatorId = creatorId,
     creatorName = creatorName,
-    deadline    = deadline,
-    proofType   = ProofType.valueOf(proofType),
-    status      = ChallengeStatus.valueOf(status),
+    deadline = deadline,
+    proofType = ProofType.valueOf(proofType),
+    status = ChallengeStatus.valueOf(status),
     participantCount = participantCount,
-    pendingProofs    = pendingProofs.map { it.toDomain() }
+    pendingProofs = pendingProofs.map { it.toDomain() }
 )
 
 fun ProofDto.toDomain(): Proof = Proof(
-    id        = id,
-    userId    = userId,
-    userName  = userName,
-    mediaUrl  = mediaUrl,
+    id = id,
+    userId = userId,
+    userName = userName,
+    mediaUrl = mediaUrl,
     createdAt = createdAt
 )
 
 fun UserDto.toDomain(): User = User(
-    id       = id,
+    id = id,
     username = username,
-    tag      = tag,
-    email    = email
+    tag = tag,
+    email = email
 )
 
 fun UserDto.toFriend(relation: UserRelation = UserRelation.NONE): Friend = Friend(
-    id               = id,
-    username         = username,
-    tag              = tag,
+    id = id,
+    username = username,
+    tag = tag,
     activeChallenges = 0,
-    relation         = relation
+    relation  = relation
 )
 
 fun UserDto.toStats(): UserStats = UserStats(
-    created     = stats.created,
-    completed   = stats.completed,
+    created = stats.created,
+    completed = stats.completed,
     successRate = stats.successRate
 )
 
 fun HistoryItemDto.toDomain(): ChallengeHistoryItem = ChallengeHistoryItem(
-    title  = challengeTitle,
+    title = challengeTitle,
     result = ChallengeResult.valueOf(result),
-    date   = date.toString()  // "2025-01-15"
+    date = date.toString()
 )
 
 fun FriendRequestDto.toDomain(direction: RequestDirection): FriendRequest = FriendRequest(
-    id        = id,
-    fromUser  = fromUser.toFriend(),
+    id = id,
+    fromUser = fromUser.toFriend(),
     direction = direction
 )

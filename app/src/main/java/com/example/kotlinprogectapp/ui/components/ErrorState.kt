@@ -11,24 +11,24 @@ import com.example.kotlinprogectapp.ui.theme.Orange500
 
 @Composable
 fun ErrorState(
-    message:  String,
-    onRetry:  () -> Unit,
+    message: String,
+    onRetry: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier             = modifier.fillMaxSize(),
-        verticalArrangement   = Arrangement.Center,
-        horizontalAlignment   = Alignment.CenterHorizontally
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text      = message,
-            style     = MaterialTheme.typography.bodyMedium,
+            text = message,
+            style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center
         )
         Spacer(Modifier.height(16.dp))
         Button(
             onClick = onRetry,
-            colors  = ButtonDefaults.buttonColors(containerColor = Orange500)
+            colors = ButtonDefaults.buttonColors(containerColor = Orange500)
         ) {
             Text("Повторить")
         }

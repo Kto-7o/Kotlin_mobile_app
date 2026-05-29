@@ -3,6 +3,7 @@ package com.example.kotlinprogectapp.ui.screens.friends
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kotlinprogectapp.domain.usecase.friend.*
+import com.example.kotlinprogectapp.domain.usecase.user.SearchUsersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -10,11 +11,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FriendsViewModel @Inject constructor(
-    private val getFriendsUseCase:       GetFriendsUseCase,
-    private val getRequestsUseCase:      GetFriendRequestsUseCase,
-    private val sendRequestUseCase:      SendFriendRequestUseCase,
+    private val getFriendsUseCase: GetFriendsUseCase,
+    private val getRequestsUseCase: GetFriendRequestsUseCase,
+    private val sendRequestUseCase: SendFriendRequestUseCase,
     private val respondToRequestUseCase: RespondToRequestUseCase,
-    private val deleteFriendUseCase:     DeleteFriendUseCase
+    private val deleteFriendUseCase: DeleteFriendUseCase,
+    private val searchUsersUseCase: SearchUsersUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(FriendsUiState())
@@ -39,14 +41,20 @@ class FriendsViewModel @Inject constructor(
         searchJob = viewModelScope.launch {
             delay(500)
             _uiState.update { it.copy(isSearching = true) }
-            // TODO: заменить на SearchUsersUseCase когда добавите в ViewModel
+            searchUsersUseCase(query)
+                .onSuccess { results ->
+                    _uiState.update { it.copy(searchResults = results, isSearching = false) }
+                }
+                .onFailure {
+                    // при ошибке просто сбрасываем флаг, не показываем ошибку
+                    _uiState.update { it.copy(isSearching = false, searchResults = emptyList()) }
+                }
         }
     }
 
     fun onSendRequest(userId: Long) {
         viewModelScope.launch {
             sendRequestUseCase(userId).onSuccess {
-                // Помечаем пользователя как PENDING в результатах поиска
                 _uiState.update { state ->
                     state.copy(searchResults = state.searchResults.map {
                         if (it.id == userId)
@@ -73,7 +81,6 @@ class FriendsViewModel @Inject constructor(
     private fun loadAll() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
-            // Загружаем друзей и запросы параллельно
             val friendsJob  = async { getFriendsUseCase() }
             val requestsJob = async { getRequestsUseCase() }
 
@@ -82,8 +89,8 @@ class FriendsViewModel @Inject constructor(
 
             _uiState.update { state ->
                 state.copy(
-                    isLoading        = false,
-                    friends          = friends.getOrDefault(emptyList()),
+                    isLoading = false,
+                    friends = friends.getOrDefault(emptyList()),
                     incomingRequests = requests.getOrNull()?.incoming ?: emptyList(),
                     outgoingRequests = requests.getOrNull()?.outgoing ?: emptyList()
                 )

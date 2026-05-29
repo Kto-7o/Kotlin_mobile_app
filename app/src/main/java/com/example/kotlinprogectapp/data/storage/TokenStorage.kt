@@ -20,10 +20,10 @@ class TokenStorage @Inject constructor(
         EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
     )
 
-    fun saveTokens(access: String, refresh: String) {
+    fun saveTokens(access: String, refresh: String?) {
         prefs.edit {
             putString(KEY_ACCESS, access)
-                .putString(KEY_REFRESH, refresh)
+//                .putString(KEY_REFRESH, refresh)
         }
     }
 

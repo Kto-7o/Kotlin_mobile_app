@@ -9,28 +9,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.kotlinprogectapp.ui.theme.Orange500
 
-// Generic Composable — работает с любым типом T
-// Используется в DeadlinePicker и ProofTypeSelector
 @Composable
 fun <T> ChipSelector(
-    options:  List<T>,
+    options: List<T>,
     selected: T,
-    label:    (T) -> String,
+    label: (T) -> String,
     onSelect: (T) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
-        modifier            = modifier,
+        modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         options.forEach { option ->
             FilterChip(
                 selected = option == selected,
-                onClick  = { onSelect(option) },
-                label    = { Text(label(option)) },
-                colors   = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor  = Orange500.copy(alpha = 0.15f),
-                    selectedLabelColor      = Orange500
+                onClick = { onSelect(option) },
+                label = { Text(label(option)) },
+                colors = FilterChipDefaults.filterChipColors(
+                    selectedContainerColor = Orange500.copy(alpha = 0.15f),
+                    selectedLabelColor = Orange500
                 )
             )
         }

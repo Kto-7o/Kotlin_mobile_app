@@ -1,5 +1,7 @@
 package com.example.kotlinprogectapp.ui.screens.feed
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kotlinprogectapp.domain.model.FeedTab
@@ -10,6 +12,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@RequiresApi(Build.VERSION_CODES.O)
 @HiltViewModel
 class FeedViewModel @Inject constructor(
     private val getChallengesUseCase: GetChallengesUseCase,
@@ -26,6 +29,7 @@ class FeedViewModel @Inject constructor(
         loadChallenges()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun onRefresh() = loadChallenges()
 
     fun onVerdictSubmit(proofId: Long, accepted: Boolean) {
@@ -43,6 +47,7 @@ class FeedViewModel @Inject constructor(
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun loadChallenges() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
@@ -53,19 +58,19 @@ class FeedViewModel @Inject constructor(
                             isLoading  = false,
                             challenges = challenges.map { challenge ->
                                 ChallengeUi(
-                                    id               = challenge.id,
-                                    title            = challenge.title,
-                                    creatorName      = challenge.creatorName,
-                                    deadlineLabel    = formatDeadline(challenge.deadline),
+                                    id = challenge.id,
+                                    title = challenge.title,
+                                    creatorName = challenge.creatorName,
+                                    deadlineLabel = formatDeadline(challenge.deadline),
                                     participantCount = challenge.participantCount,
-                                    status           = challenge.status,
-                                    proofType        = challenge.proofType,
-                                    pendingProofs    = challenge.pendingProofs.map { proof ->
+                                    status = challenge.status,
+                                    proofType = challenge.proofType,
+                                    pendingProofs = challenge.pendingProofs.map { proof ->
                                         ProofUi(
-                                            id             = proof.id,
-                                            userId         = proof.userId,
-                                            userName       = proof.userName,
-                                            mediaUrl       = proof.mediaUrl,
+                                            id = proof.id,
+                                            userId = proof.userId,
+                                            userName = proof.userName,
+                                            mediaUrl = proof.mediaUrl,
                                             challengeTitle = challenge.title
                                         )
                                     }

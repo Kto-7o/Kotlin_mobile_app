@@ -16,8 +16,8 @@ data class Challenge(
 )
 
 enum class ChallengeStatus { ACTIVE, COMPLETED, EXPIRED, INCOMING }
-enum class ProofType       { PHOTO, VIDEO, SCREENSHOT }
-enum class FeedTab         { ACTIVE, INCOMING, ARCHIVE }
+enum class ProofType { PHOTO, VIDEO, SCREENSHOT }
+enum class FeedTab { ACTIVE, INCOMING, ARCHIVE }
 
 data class CreateChallengeData(
     val title: String,

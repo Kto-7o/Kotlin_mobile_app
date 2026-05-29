@@ -10,12 +10,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.*
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.kotlinprogectapp.ui.navigation.Screen
+import com.example.kotlinprogectapp.ui.screens.feed.FeedScreen
 import com.example.kotlinprogectapp.ui.theme.Orange500
 
 @Composable
@@ -32,34 +35,34 @@ fun LoginScreen(navController: NavController) {
     }
 
     Column(
-        modifier             = Modifier
+        modifier = Modifier
             .fillMaxSize()
             .padding(24.dp),
-        verticalArrangement   = Arrangement.Center,
-        horizontalAlignment   = Alignment.CenterHorizontally
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("chall.", fontSize = 36.sp, fontWeight = FontWeight.ExtraBold, color = Orange500)
+        Text("Goal", fontSize = 36.sp, fontWeight = FontWeight.ExtraBold, color = Orange500)
         Spacer(Modifier.height(8.dp))
         Text("Войти в аккаунт", style = MaterialTheme.typography.bodyMedium)
         Spacer(Modifier.height(32.dp))
 
         // Поле логина
         OutlinedTextField(
-            value         = state.login,
+            value = state.login,
             onValueChange = vm::onLoginChanged,
-            label         = { Text("Логин") },
-            singleLine    = true,
-            modifier      = Modifier.fillMaxWidth(),
+            label = { Text("Логин") },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
         )
         Spacer(Modifier.height(12.dp))
 
         OutlinedTextField(
-            value         = state.password,
+            value = state.password,
             onValueChange = vm::onPasswordChanged,
-            label         = { Text("Пароль") },
-            singleLine    = true,
-            modifier      = Modifier.fillMaxWidth(),
+            label = { Text("Пароль") },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
             visualTransformation = if (state.passwordVisible)
                 VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon  = {
@@ -102,3 +105,5 @@ fun LoginScreen(navController: NavController) {
         }
     }
 }
+
+

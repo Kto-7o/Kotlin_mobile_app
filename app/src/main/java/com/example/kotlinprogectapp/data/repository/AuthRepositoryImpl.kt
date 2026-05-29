@@ -15,8 +15,7 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun login(login: String, password: String): Result<Unit> {
         return try {
             val response = api.login(LoginDto(login, password))
-            tokenStorage.saveTokens(response.accessToken, response.refreshToken)
-            // сохраняем ID чтобы getCurrentUserId() работал без сети
+            tokenStorage.saveTokens(response.accessToken, response.refreshToken ?: "")
             val me = api.getMe()
             tokenStorage.saveUserId(me.id)
             Result.success(Unit)
@@ -30,7 +29,7 @@ class AuthRepositoryImpl @Inject constructor(
             val response = api.register(
                 RegisterDto(data.username, data.tag, data.email, data.password)
             )
-            tokenStorage.saveTokens(response.accessToken, response.refreshToken)
+            tokenStorage.saveTokens(response.accessToken, response.refreshToken ?: "")
             val me = api.getMe()
             tokenStorage.saveUserId(me.id)
             Result.success(Unit)

@@ -11,7 +11,7 @@ import com.example.kotlinprogectapp.ui.theme.Orange500
 @Composable
 fun LoadingView(modifier: Modifier = Modifier) {
     Box(
-        modifier        = modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         CircularProgressIndicator(color = Orange500)

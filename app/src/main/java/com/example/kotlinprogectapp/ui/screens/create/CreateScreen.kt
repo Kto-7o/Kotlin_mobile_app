@@ -25,28 +25,28 @@ import com.example.kotlinprogectapp.ui.theme.Orange500
 @Composable
 fun CreateChallengeScreen(navController: NavController) {
     val vm: CreateViewModel = hiltViewModel()
-    val state   by vm.uiState.collectAsStateWithLifecycle()
+    val state by vm.uiState.collectAsStateWithLifecycle()
     val friends by vm.friends.collectAsStateWithLifecycle()
 
     LaunchedEffect(state.isSuccess) {
         if (state.isSuccess) navController.popBackStack()
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Новый челлендж") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Назад")
-                    }
-                }
-            )
-        }
-    ) { padding ->
+//    Scaffold(
+////        topBar = {
+////            TopAppBar(
+////                title = { Text("Новый челлендж") },
+////                navigationIcon = {
+////                    IconButton(onClick = { navController.popBackStack() }) {
+////                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Назад")
+////                    }
+////                }
+////            )
+////        }
+//    ) { padding ->
         Column(
             modifier = Modifier
-                .padding(padding)
+//                .padding(padding)
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp),
@@ -56,20 +56,20 @@ fun CreateChallengeScreen(navController: NavController) {
 
             // Название
             OutlinedTextField(
-                value         = state.title,
+                value = state.title,
                 onValueChange = vm::onTitleChanged,
-                label         = { Text("Название задания") },
-                singleLine    = true,
-                modifier      = Modifier.fillMaxWidth()
+                label = { Text("Название задания") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
             )
 
             // Описание
             OutlinedTextField(
-                value         = state.description,
+                value = state.description,
                 onValueChange = vm::onDescriptionChanged,
-                label         = { Text("Описание и правила") },
-                minLines      = 3,
-                modifier      = Modifier.fillMaxWidth()
+                label = { Text("Описание и правила") },
+                minLines = 3,
+                modifier = Modifier.fillMaxWidth()
             )
 
             // Дедлайн
@@ -77,9 +77,9 @@ fun CreateChallengeScreen(navController: NavController) {
                 Text("Дедлайн", style = MaterialTheme.typography.bodyMedium)
                 Spacer(Modifier.height(6.dp))
                 ChipSelector(
-                    options  = listOf(1, 3, 7, 30),
+                    options = listOf(1, 3, 7, 30),
                     selected = state.deadlineDays,
-                    label    = { "${it}д" },
+                    label = { "${it}д" },
                     onSelect = vm::onDeadlineChanged
                 )
             }
@@ -89,9 +89,9 @@ fun CreateChallengeScreen(navController: NavController) {
                 Text("Доказательство", style = MaterialTheme.typography.bodyMedium)
                 Spacer(Modifier.height(6.dp))
                 ChipSelector(
-                    options  = ProofType.values().toList(),
+                    options  = ProofType.entries,
                     selected = state.proofType,
-                    label    = { when (it) {
+                    label = { when (it) {
                         ProofType.PHOTO      -> "Фото"
                         ProofType.VIDEO      -> "Видео"
                         ProofType.SCREENSHOT -> "Скриншот"
@@ -112,12 +112,12 @@ fun CreateChallengeScreen(navController: NavController) {
                             val selected = friend.id in state.invitedFriends
                             FilterChip(
                                 selected = selected,
-                                onClick  = { vm.onFriendToggled(friend.id) },
-                                label    = { Text(friend.username) },
+                                onClick = { vm.onFriendToggled(friend.id) },
+                                label = { Text(friend.username) },
                                 leadingIcon = { AvatarView(name = friend.username, size = 22.dp) },
-                                colors   = FilterChipDefaults.filterChipColors(
+                                colors = FilterChipDefaults.filterChipColors(
                                     selectedContainerColor = Orange500.copy(alpha = 0.15f),
-                                    selectedLabelColor     = Orange500
+                                    selectedLabelColor = Orange500
                                 )
                             )
                         }
@@ -131,10 +131,10 @@ fun CreateChallengeScreen(navController: NavController) {
             }
 
             Button(
-                onClick  = vm::onSubmit,
-                enabled  = state.isValid && !state.isLoading,
+                onClick = vm::onSubmit,
+                enabled = state.isValid && !state.isLoading,
                 modifier = Modifier.fillMaxWidth().height(52.dp),
-                colors   = ButtonDefaults.buttonColors(containerColor = Orange500)
+                colors = ButtonDefaults.buttonColors(containerColor = Orange500)
             ) {
                 if (state.isLoading) CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary)
                 else Text("Создать челлендж", fontWeight = FontWeight.Bold)
@@ -143,4 +143,4 @@ fun CreateChallengeScreen(navController: NavController) {
             Spacer(Modifier.height(16.dp))
         }
     }
-}
+//}
